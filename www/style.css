@@ -1,0 +1,425 @@
+﻿/*<全局>*/
+    body
+    {
+        margin:0;
+        box-sizing: border-box;
+    }
+    *
+    {
+        text-align:left;
+        font-family: Arial,Tahoma,Helvetica,Hiragino Sans GB;
+        
+    }
+
+    a
+    {
+        text-decoration:none;
+    }
+    #mangalist a
+    {
+        
+        color:rgb(51, 102, 153);
+        width:auto;
+    }
+    #mangalist a:hover
+    {
+        color:rgb(150,80,80);
+    }
+    #mangalist a:visted
+    {
+        color:red
+    }
+/*</全局>*/
+
+/*<结构性>*/
+    .top_bar
+    {   
+        
+        color: #fff;
+        /* background: url("/pics/guide.png") repeat scroll center top transparent; */
+        height: 48px;
+        top:0px;
+        width:100%;
+        position:fixed;
+        left:0;
+        
+        overflow:hidden;
+    }
+    .top_bar *
+    {
+        /*position:relative*/
+    }
+    #guide
+    {
+        /*background:rgba(76,156,215,.9);*/
+        background: #fff;
+        /* background:rgba(180,208,235,.4); */
+        z-index:100;
+        
+    }
+    #guide_bg
+    {
+        background:rgba(76,156,215,.0);
+        z-index:98;
+        box-shadow:1px 0 1.3px #999;
+    }
+    #proc_bar
+    {
+        width:0;
+        background:rgba(0,0,0,1);
+        z-index:99;
+    }
+    .title
+    {
+        display: inline;
+        height: 42px;
+        line-height: 42px;
+        width: auto;
+        color: #999;
+        text-shadow:0 0 9px #fff;
+        text-align: left;
+        margin: 0px;
+        padding: 0px 24px 0px 0px;
+        font-size: 18px;
+        font-weight: bold;
+        left:15px;
+        overflow:hidden;
+    }
+    .clearfix
+    {
+        height: 48px;
+        top:0px;
+        width:100%;
+    }
+    .bottom
+    {
+        background:black ;
+        color=rgb(100,100,100);
+        bottom:%0;
+        width:100%;
+        position:absolute;
+        left:0;
+    }
+    #imgcontent
+    {
+        position:relative;
+        height:auto;
+    }
+    #imgcontent>img
+    {
+        /* width:100%; */
+    }
+    #mangalist
+    {
+        /* margin-left:4%; */
+        border-top: 1px solid #eee;
+    }
+    #mangalist>div
+    {
+        /* padding-top:1px;
+        padding-bottom:2px; */
+    }
+    .bar
+    {
+        display:none;
+        position:fixed;
+        height:100%;
+        width:200px;
+        background-color:black;
+        background-color:rgba(12,12,12,1);
+        color:#fff;
+        z-index:103;
+        left:0;
+        top:0;
+        box-shadow:0 1px 2px #777;
+    }
+    .bar_mask {
+        z-index: 102;
+        position: fixed;
+        background: transparent;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        display: none;
+
+    }
+    .bar a,.bar a:hover,.bar a:visited
+    {
+        color:#eee;
+    }
+    .bar .barheader
+    {
+        font-size: 21px;
+        font-weight: bold;
+        margin-top:5px;
+        margin-left:5px;
+        height:auto;
+        box-shadow: 0px 2px 4px #000;
+    }
+    .bar .bartitle
+    {
+        float:left;
+        height:auto;
+        
+    }
+    .bar .barCb
+    {   
+        font-size: 25px;
+        float:right;
+        margin:1px;
+        height:auto;
+    }
+    .bar .barElem
+    {
+        padding-left:5px;
+        padding-top:9px;
+        padding-bottom:9px;
+        width:100%;
+        font-size: 21px;
+        float:none;
+        clear:both;
+        
+    }
+    .barElem>a
+    {
+        
+        width:100%;
+        display:block;
+    }
+    .bar .barElem:hover
+    {
+        background-color:rgb(51, 102, 153);
+        zbox-shadow: 0px 2px 7px #000;
+    }
+    .bar .barcontent
+    {
+        margin:0;
+        overflow-x:visible;
+        width:100%;
+        height:auto;
+    }
+    .barcontentscroll
+    {
+        height:100%;
+        width:100%;
+        zoverflow-x:visible;
+        overflow-y:auto;
+        
+    }
+    .bar .barscroll
+    {
+        width: 200;
+        padding-top: 30px;
+        background-color: #eee;
+        position: fixed;
+        bottom: 0;
+    }
+    .bar .barscrollTop
+    {
+        width: 200;
+        padding-top: 30px;
+        background-color: #eee;
+        position: fixed;
+        display:none;
+        top: 0;
+    }
+    .fun-button
+    {
+        position:fixed;
+        
+    }
+    .ftype-mp3:before
+    {
+        content:'【音乐】';
+    }
+    .fitem
+    {
+        display: block;
+        cursor:pointer;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        padding-left: 2%;
+        
+        border-bottom: 1px solid #eee;
+    }
+/*</结构性>*/
+
+
+.search
+{
+    height:29px;
+    width: 30%;
+    border:none;
+    border:1px solid transparent;
+    /* border-radius:5px; */
+/*     border-left:1px solid #ccc;
+    border-right:1px solid #ccc; */
+    margin:0;
+    font-size: 100%;
+    zvertical-align: middle;
+    /* color:black; */
+    background:transparent;
+    color:#fff;
+    
+    padding: 6px;
+    transition: box-shadow .3s ;
+    transition: background .3s ;
+    cursor: pointer;
+}
+.search:focus
+{   
+    outline:none;
+    -webkit-appearance:none;
+    /* border-color:rgb(150,80,80); */
+    cursor: initial;
+    /* background: rgb(200,255,255); */
+    background: #fff;
+    color: #999;
+    /* box-shadow: 0px 1px 10px rgba(0,0,0,.35) inset; */
+    border:1px solid #ccc;
+}
+.search:hover
+{
+    border:1px solid #ccc;
+}
+
+
+
+.selected
+/* 正在播放 */
+{
+    color:#fff !important;
+    background:rgb(51, 102, 153);
+}
+.selected:before
+{
+    content:'【播放】';
+}
+span.redc
+{
+    color:red
+}
+.ver
+{
+    color:#666
+}
+.daoguowenhua
+{
+    color:rgb(51, 102, 153);
+    text-decoration:line-through;
+}
+#C_info
+{
+    color:#eeeeee
+}
+.cancel
+{
+    text-decoration:line-through
+}
+
+.back
+{
+    font-size: 25px !important;
+}
+
+/* 浮动歌词 */
+div.lyric-container {
+    position:fixed;
+    right:5px;
+    bottom:45px;
+    width: 100%;
+    pointer-events:none;
+    transition:opacity .12s 0s;
+    z-index: 110;
+}
+
+div.lyric-inner {
+    max-width:1360px;
+    width: 100%;
+}
+
+span.lyric-text {
+    /* 
+        font-size: 35px
+
+        橙色
+        rgb(255,125,0),
+        rgba(165,155,0,.85)
+
+        蓝色
+        rgb(0,125,255)
+        rgba(0,155,165,.85)
+
+     */
+    color: rgb(0,165,255);
+    font-size: 19px;
+    font-weight: bolder;
+    font-family: "楷体";
+    text-shadow: 1px 1px 9px rgba(0,155,195,.85);
+    
+}
+
+.lyric-orange {
+    color: rgb(255,125,0);
+    text-shadow: 1px 1px 9px rgba(165,155,0,.85);
+}
+
+.lyric-blue {
+    color: rgb(0,165,255);
+    text-shadow: 1px 1px 9px rgba(0,155,195,.85);
+}
+
+.opacity0 {
+    opacity:0;
+}
+.opacity100 {
+    opacity:1;
+}
+
+
+/* additions */
+.nd-lyric-fade {
+    position: absolute;
+    text-align: right;
+    width: 100%;
+}
+
+.align-right {
+    font-family: inherit;
+    text-align: right;
+}
+
+.align-center {
+    font-family: inherit;
+    text-align: center;
+}
+
+div.option {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #000;
+}
+
+div.option > ul {
+    margin: 0;
+    padding: 0;
+}
+
+div.option >ul li {
+    text-align: center;
+    margin-top: 2px;
+    background-color: #444;
+    text-decoration: none;
+}
+
+div.option >ul li a {
+    text-align: center;
+    display: block;
+    color: #fff;
+    cursor: pointer;
+    height: 100%;
+    line-height: 100%;
+    padding: 10px 0 10px 0;
+}
