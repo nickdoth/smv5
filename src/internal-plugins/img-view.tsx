@@ -101,7 +101,14 @@ const imgView: SMVPlugin<PluginState> = {
             let seekIndex = state.dirFiles.indexOf(state.src) + action.payload;
             if (seekIndex >= state.dirFiles.length) seekIndex = 0;
             if (seekIndex < 0) seekIndex = state.dirFiles.length - 1;
-            return { ...state, src: state.dirFiles[seekIndex], loading: true };
+            let nextImg = state.dirFiles[seekIndex];
+
+            if (nextImg !== state.src) {
+                return { ...state, src: state.dirFiles[seekIndex], loading: true };
+            }
+            else {
+                return state;
+            }
         default:
             return state;
         }
