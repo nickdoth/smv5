@@ -1,5 +1,6 @@
 import { MouseEvent, StatelessComponent, ComponentClass } from 'react';
 import { Reducer, Dispatch } from 'redux';
+import { EventEmitter } from 'events';
 
 import { State } from './store';
 /** Props of <Page> Component */
@@ -42,9 +43,15 @@ export interface SMVPlugin<S extends SMVPluginState> {
     render: StatelessComponent<{}> | ComponentClass<{}>;
     dispatch: Dispatch<any>;
 
+    start(dispatch: Function, hub: SMVLifeCycle): void;
+
     onRequestFileOptions?(ext: string, filepath: string, dirFiles?: string[]): FileOption[];
 }
 
 export interface SMVPluginState {
     
+}
+
+export interface SMVLifeCycle {
+    onRequestFileOptions(listener: (ext: string, filepath: string, dirFiles?: string[]) => FileOption[]): this;
 }

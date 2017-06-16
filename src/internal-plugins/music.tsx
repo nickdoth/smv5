@@ -190,6 +190,18 @@ const music: SMVPlugin<PluginState> = {
         }
     },
     render: connect(mapStateToProps)(Player),
+    start(dispatch, smv) {
+        smv.onRequestFileOptions((ext, filepath) => {
+            if (ext.toLowerCase() !== '.mp3') return [];
+
+            return [
+                {
+                    name: 'Play',
+                    action: path => dispatch(actions.play(path))
+                }
+            ];
+        });
+    },
     onRequestFileOptions(ext, filepath) {
         if (ext.toLowerCase() !== '.mp3') return [];
 
