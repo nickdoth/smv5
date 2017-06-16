@@ -45,7 +45,7 @@ const Toolbar: StatelessComponent<ToolbarProps> = ({ isPause, togglePlay, toggle
                 {Icon({iconSym: isPause ? glyphicon.play : glyphicon.pause})}
             </ToolbarButton>
             <View style={[
-                styles.toolbarItem, { width: '70%', background: '#ccc', position: 'relative', flexShrink: 2, flexGrow: 2 }
+                styles.toolbarItem, { width: '70%', backgroundColor: '#ccc', position: 'relative', flexShrink: 2, flexGrow: 2 }
             ]}>
                 <View style={[styles.progval, { width: `${process}%` }]}>
                     <Text>{' '}</Text>

@@ -88,8 +88,6 @@ const mapDispatchToProps = (dispatch: Function) => {
 };
 
 const imgView: SMVPlugin<PluginState> = {
-    /** @TODO 不良实现 */
-    dispatch: null,
     name: 'imgView',
     reducer: (state = initialState, action: any) => {
         switch (action.type) {
@@ -109,18 +107,20 @@ const imgView: SMVPlugin<PluginState> = {
         }
     },
     render: connect(mapStateToProps, mapDispatchToProps)(ImgView),
-    onRequestFileOptions(ext, filepath, dirFiles) {
-        const imgExts = ['.jpg', '.gif', '.png'];
-        if (imgExts.indexOf(ext) < 0) return [];
+    start(dispatch, smv) {
+        smv.onRequestFileOptions((ext, filepath, dirFiles) => {
+            const imgExts = ['.jpg', '.gif', '.png'];
+            if (imgExts.indexOf(ext) < 0) return [];
 
-        dirFiles = dirFiles.filter(n => imgExts.indexOf(extname(n).toLowerCase()) > -1);
+            dirFiles = dirFiles.filter(n => imgExts.indexOf(extname(n).toLowerCase()) > -1);
 
-        return [
-            {
-                name: 'View',
-                action: path => imgView.dispatch(actions.load(path, dirFiles))
-            }
-        ];
+            return [
+                {
+                    name: 'View',
+                    action: path => dispatch(actions.load(path, dirFiles))
+                }
+            ];
+        });
     }
 }
 

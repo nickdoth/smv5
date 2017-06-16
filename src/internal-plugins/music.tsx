@@ -71,38 +71,40 @@ const stPlaylistItem = {
 const audio = new HTMLMedia();
 
 // Event linkings
-audio.on('durationchange', () => {
-    music.dispatch && music.dispatch(actions.internalSync({ totalTime: audio.getDuration() }));
-});
+function linkEvents(dispatch: Function) {
+    audio.on('durationchange', () => {
+        dispatch(actions.internalSync({ totalTime: audio.getDuration() }));
+    });
 
-audio.on('timeupdate', () => {
-    music.dispatch && music.dispatch(actions.internalSync({ currentTime: audio.getCurrentTime() }));
-});
+    audio.on('timeupdate', () => {
+        dispatch(actions.internalSync({ currentTime: audio.getCurrentTime() }));
+    });
 
-audio.on('canplay', () => {
-    music.dispatch && music.dispatch(actions.internalSync({ canPlay: true }));
-});
+    audio.on('canplay', () => {
+        dispatch(actions.internalSync({ canPlay: true }));
+    });
 
-audio.on('play', () => {
-    music.dispatch && music.dispatch(actions.internalSync({ isPlaying: true, isPause: false }));
-});
+    audio.on('play', () => {
+        dispatch(actions.internalSync({ isPlaying: true, isPause: false }));
+    });
 
-audio.on('pause', () => {
-    music.dispatch && music.dispatch(actions.internalSync({ isPlaying: false, isPause: true }));
-});
+    audio.on('pause', () => {
+        dispatch(actions.internalSync({ isPlaying: false, isPause: true }));
+    });
 
-audio.on('ended', () => {
-    // playlist looping
-    if (!music.dispatch) return;
-    let index = playlist.indexOf(currentPlaying);
-    if (index < 0 || index + 1 >= playlist.length) {
-        index = 0;
-    }
-    else {
-        ++index;
-    }
-    music.dispatch(actions.play(playlist[index]));
-});
+    audio.on('ended', () => {
+        // playlist looping
+        let index = playlist.indexOf(currentPlaying);
+        if (index < 0 || index + 1 >= playlist.length) {
+            index = 0;
+        }
+        else {
+            ++index;
+        }
+        dispatch(actions.play(playlist[index]));
+    });
+
+}
 
 // internal playlist
 
@@ -164,8 +166,6 @@ const initialState: PluginState = {
 };
 
 const music: SMVPlugin<PluginState> = {
-    /** @TODO 不良实现 */
-    dispatch: null,
     name: 'musicPlayer',
     reducer: (state: PluginState = initialState, action: any) => {
         switch (action.type) {
@@ -191,6 +191,8 @@ const music: SMVPlugin<PluginState> = {
     },
     render: connect(mapStateToProps)(Player),
     start(dispatch, smv) {
+        linkEvents(dispatch);
+
         smv.onRequestFileOptions((ext, filepath) => {
             if (ext.toLowerCase() !== '.mp3') return [];
 
@@ -201,16 +203,6 @@ const music: SMVPlugin<PluginState> = {
                 }
             ];
         });
-    },
-    onRequestFileOptions(ext, filepath) {
-        if (ext.toLowerCase() !== '.mp3') return [];
-
-        return [
-            {
-                name: 'Play',
-                action: path => music.dispatch(actions.play(path))
-            }
-        ];
     }
 }
 

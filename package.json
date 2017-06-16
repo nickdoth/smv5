@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
-    "www": "node ./www.js \"/Volumes/SGPublic/DiskE/Offline (Lib_4096886_outline)\"",
+    "www": "node ./www.js",
     "postinstall": "npm run remove-rn-globals",
     "remove-rn-globals": "node ./_remove_rn_globals"
   },

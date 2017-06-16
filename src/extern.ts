@@ -41,7 +41,6 @@ export interface SMVPlugin<S extends SMVPluginState> {
     name: string;
     reducer: Reducer<S>;
     render: StatelessComponent<{}> | ComponentClass<{}>;
-    dispatch: Dispatch<any>;
 
     start(dispatch: Function, hub: SMVLifeCycle): void;
 

@@ -2,10 +2,11 @@ import { createAction } from 'redux-action';
 import plugins from './plugins';
 import { OptionPanelItem, FileOption } from './extern';
 import { join as pathJoin, extname } from 'path';
+import { smvLifeCycle } from './store';
 
 export const openFile = createAction('OPEN_FILE', (path, dirFiles) => {
     let operations: FileOption[] = [];
-    plugins.map(plugin => plugin.onRequestFileOptions(extname(path).toLowerCase(), path, dirFiles)).forEach(ops => {
+    smvLifeCycle.optionAdaptors.map(adaptor => adaptor(extname(path).toLowerCase(), path, dirFiles)).forEach(ops => {
         operations = operations.concat(ops);
     });
 

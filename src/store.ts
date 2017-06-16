@@ -1,7 +1,7 @@
 import { createStore, combineReducers, Action, Reducer, applyMiddleware, compose } from 'redux';
 import reduxThunk from 'redux-thunk';
 import plguins from './plugins';
-
+import { SMVLifeCycle, FileOption } from './extern';
 
 export interface State {
     title: string;
@@ -43,6 +43,23 @@ const store = createStore(
     )
 );
 
-plguins.forEach(plugin => plugin.dispatch = store.dispatch);
+// define lifecycle callbacks & load all plugins
+
+export var smvLifeCycle: SMVLifeCycle & LifeCycleVars = {
+    optionAdaptors: [],
+
+    onRequestFileOptions(listener) {
+        smvLifeCycle.optionAdaptors.push(listener);
+        return smvLifeCycle;
+    }
+};
+
+plguins.forEach(plugin => plugin.start(store.dispatch, smvLifeCycle));
+
+type LifeCycleVars = {
+    optionAdaptors: ((ext: string, filepath: string, dirFiles?: string[]) => FileOption[])[];
+};
+
+
 
 export default store;
