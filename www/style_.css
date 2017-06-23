@@ -94,7 +94,7 @@
     .bottom
     {
         background:black ;
-        color=rgb(100,100,100);
+        /*color=rgb(100,100,100);*/
         bottom:%0;
         width:100%;
         position:absolute;
@@ -332,6 +332,7 @@ div.lyric-container {
     pointer-events:none;
     transition:opacity .12s 0s;
     z-index: 110;
+    
 }
 
 div.lyric-inner {
