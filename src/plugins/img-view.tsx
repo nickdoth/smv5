@@ -1,6 +1,8 @@
-import { SMVPlugin } from '../extern';
+import { SMVLifeCycle } from '../extern';
+
 import * as React from 'react';
 import { StatelessComponent } from 'react';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { createAction } from 'redux-action';
 import { extname } from 'path';
@@ -61,35 +63,33 @@ const actions = {
         return { src: path, dirFiles: dirFiles, visible: true };
     }),
 
-    toggle: createAction('TOGGLE_IMGVIEW', () => { }),
+    toggle: createAction('TOGGLE_IMGVIEW', () => null),
 
-    next: createAction('SEEK_IMG', () => {
-        return 1;
-    }),
+    next: createAction('SEEK_IMG', () => 1),
 
-    prev: createAction('SEEK_IMG', () => {
-        return -1;
-    }),
+    prev: createAction('SEEK_IMG', () => -1),
 
-    imgLoaded: createAction('IMGVIEW_LOADED', () => { })
+    imgLoaded: createAction('IMGVIEW_LOADED', () => null)
 }
 
 const mapStateToProps = (state: { imgView: PluginState }) => {
     return { ...state.imgView };
 }
 
-const mapDispatchToProps = (dispatch: Function) => {
-    return {
-        toggle: () => dispatch(actions.toggle()),
-        next: () => dispatch(actions.next()),
-        prev: () => dispatch(actions.prev()),
-        imgLoaded: () => dispatch(actions.imgLoaded()),
-    };
+const mapDispatchToProps = (dispatch: any) => {
+    // return {
+    //     toggle: () => dispatch(actions.toggle()),
+    //     next: () => dispatch(actions.next()),
+    //     prev: () => dispatch(actions.prev()),
+    //     imgLoaded: () => dispatch(actions.imgLoaded()),
+    // };
+    return bindActionCreators(actions, dispatch);
 };
 
-const imgView: SMVPlugin<PluginState> = {
-    name: 'imgView',
-    reducer: (state = initialState, action: any) => {
+
+export var name = 'imgView';
+
+export function reducer(state = initialState, action: any) {
         switch (action.type) {
         case 'LOAD_IMGVIEW':
             return { ...state, ...action.payload, loading: true };
@@ -112,23 +112,24 @@ const imgView: SMVPlugin<PluginState> = {
         default:
             return state;
         }
-    },
-    render: connect(mapStateToProps, mapDispatchToProps)(ImgView),
-    start(dispatch, smv) {
-        smv.onRequestFileOptions((ext, filepath, dirFiles) => {
-            const imgExts = ['.jpg', '.gif', '.png'];
-            if (imgExts.indexOf(ext) < 0) return [];
-
-            dirFiles = dirFiles.filter(n => imgExts.indexOf(extname(n).toLowerCase()) > -1);
-
-            return [
-                {
-                    name: 'View',
-                    action: path => dispatch(actions.load(path, dirFiles))
-                }
-            ];
-        });
     }
-}
 
-export default imgView;
+export var render = connect(mapStateToProps, mapDispatchToProps)(ImgView);
+
+export function start(smv: SMVLifeCycle) {
+    let dispatch = smv.dispatch;
+
+    smv.onRequestFileOptions((ext, filepath, dirFiles) => {
+        const imgExts = ['.jpg', '.gif', '.png'];
+        if (imgExts.indexOf(ext) < 0) return [];
+
+        dirFiles = dirFiles.filter(n => imgExts.indexOf(extname(n).toLowerCase()) > -1);
+
+        return [
+            {
+                name: 'View',
+                action: () => dispatch(actions.load(filepath, dirFiles))
+            }
+        ];
+    });
+}

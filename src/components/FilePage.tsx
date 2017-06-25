@@ -1,25 +1,30 @@
 import * as React from 'react';
 import { StatelessComponent, MouseEvent } from 'react';
 import ListItem from './ListItem';
+import OptionPanel from './OptionPanel';
 import Page from './Page';
 import { basename } from 'path';
-// import * as ReactList from 'react-list'; // type failed
-// const ReactList = require('react-list');
+
+import { State } from '../store';
 import { ListView, View } from 'react-native';
 
-interface FilePageProps {
+interface FilePageProps extends State {
     openFile(path: string, dirFiles: string[]): any;
+    showOptionPanel(path: string, dirFiles: string[]): any;
+    hideOptionPanel(): any;
     chdir(path: string): any;
-    files: { name: string, path: string, isDir: boolean }[];
-    title: string;
-    hashPath: string;
+    // files: { name: string, path: string, isDir: boolean }[];
+    // title: string;
+    // hashPath: string;
+    // optionPanelVisile: boolean;
 }
 
 const FilePage: StatelessComponent<FilePageProps> = (props) => {
     let renderItem = (file: { name: string, path: string, isDir: boolean }) => {
         // let file = props.files[index];
 
-        return <ListItem key={file.path} caption={file.name} onPress={() => {
+        return <ListItem key={file.path} caption={file.name}
+        onPress={() => {
             if (file.isDir) {
                 props.chdir(file.path);
             }
@@ -27,7 +32,12 @@ const FilePage: StatelessComponent<FilePageProps> = (props) => {
                 console.log('FilePage/props.files[].file.path', file.path);
                 props.openFile(file.path, props.files.map(n => n.path));
             }
-        }} />
+        }}
+        onRequestOption={() => {
+            if (file.isDir) return;
+            props.showOptionPanel(file.path, props.files.map(n => n.path));
+        }}
+        />
     };
 
     let dsFiles = new ListView.DataSource({
@@ -36,14 +46,13 @@ const FilePage: StatelessComponent<FilePageProps> = (props) => {
 
     // console.log('React-List', ReactList);
     return (
-        <Page title={basename(decodeURIComponent(props.hashPath))}>
-            {/*<div className='clearfix'></div>*/}
-            {/*<div id='mangalist'>*/}
-                {/*<ListItem caption="返回上级" />*/}
-                {/*{props.children}*/}
+        <View style={{ flex: 1 }}>
+            <Page title={basename(decodeURIComponent(props.hashPath))}>
                 <ListView dataSource={dsFiles} renderRow={renderItem} />
-            {/*</div>*/}
-        </Page>
+            </Page>
+            <OptionPanel dismiss={props.hideOptionPanel} options={props.panelOptions} visible={props.optionPanelVisible}/>
+            {props.plugins.map(plugin => <plugin.render key={`smv-plugin-${plugin.name}`} />)}
+        </View>
     )
 }
 

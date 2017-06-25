@@ -12,10 +12,7 @@ class AppWrapped extends Component<{}, {}> {
 
     render() {
         return <Provider store={store}>
-            <View style={{ flex: 1 }}>
-                <App />
-                {plugins.map(plugin => <plugin.render key={`smv-plugin-${plugin.name}`} />)}
-            </View>
+            <App/>
         </Provider>;
     }
 }

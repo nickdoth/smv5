@@ -1,4 +1,5 @@
-import { SMVPlugin } from '../extern';
+import { SMVLifeCycle } from '../../extern';
+
 import * as React from 'react';
 import { StatelessComponent, Component } from 'react';
 import { View, TouchableHighlight, Text } from 'react-native';
@@ -7,9 +8,9 @@ import { createAction } from 'redux-action';
 import { bindActionCreators } from 'redux';
 import { basename } from 'path';
 
-import { HTMLMedia } from '../apis/media/htmlmedia';
-import Toolbar from './music-comp/Toolbar';
-import LyricView from './music-comp/LyricView';
+import { HTMLMedia } from './apis/media/htmlmedia';
+import Toolbar from './components/Toolbar';
+import LyricView from './components/LyricView';
 
 interface PluginState {
     path: string;
@@ -127,6 +128,16 @@ const actions = {
         return { path: currentPlaying, playlist: [].concat(playlist) };
     }),
 
+    addToPlist: createAction('ADD_TO_PLIST', (path) => {
+        // update internal playlist
+        if (playlist.indexOf(path) < 0) {
+            playlist.push(path);
+        }
+        currentPlaying = path;
+
+        return { playlist: [].concat(playlist) };
+    }),
+
     toggle: createAction('TOGGLE_MUSIC', () => {
         if (audio.isPaused()) {
             audio.play();
@@ -165,45 +176,51 @@ const initialState: PluginState = {
     canPlay: true,
 };
 
-const music: SMVPlugin<PluginState> = {
-    name: 'musicPlayer',
-    reducer: (state: PluginState = initialState, action: any) => {
-        switch (action.type) {
-        case 'PLAY_MUSIC':
-            console.log('action(PLAY_MUIC).path', action.payload.path);
-            return { ...state,
-                ...action.payload,
-                canPlay: false,
-                lrcId: Math.random()
-            };
-        case 'INTERNAL_SYNC': // fall through
-        case 'REMOVE_PLIST_ITEM':
-            return { ...state, ...action.payload };
-        case 'OPEN_FILE':
-            console.info('Note: All reducers can subscribe all actions');
-            return state;
-            // nobreak;
-        case 'TOGGLE_PLIST':
-            return { ...state, plistVisible: !state.plistVisible };
-        default:
-            return state;
-        }
-    },
-    render: connect(mapStateToProps)(Player),
-    start(dispatch, smv) {
-        linkEvents(dispatch);
-
-        smv.onRequestFileOptions((ext, filepath) => {
-            if (ext.toLowerCase() !== '.mp3') return [];
-
-            return [
-                {
-                    name: 'Play',
-                    action: path => dispatch(actions.play(path))
-                }
-            ];
-        });
+export var name = 'musicPlayer';
+    
+export function reducer(state: PluginState = initialState, action: any) {
+    switch (action.type) {
+    case 'PLAY_MUSIC':
+        console.log('action(PLAY_MUIC).path', action.payload.path);
+        return { ...state,
+            ...action.payload,
+            canPlay: false,
+            lrcId: Math.random()
+        };
+    case 'INTERNAL_SYNC': // fall through
+    case 'ADD_TO_PLIST': // fall through
+    case 'REMOVE_PLIST_ITEM':
+        return { ...state, ...action.payload };
+    case 'OPEN_FILE':
+        console.info('Note: All reducers can subscribe all actions');
+        return state;
+        // nobreak;
+    case 'TOGGLE_PLIST':
+        return { ...state, plistVisible: !state.plistVisible };
+    default:
+        return state;
     }
 }
 
-export default music;
+export var render = connect(mapStateToProps)(Player);
+
+export function start(smv: SMVLifeCycle) {
+    let dispatch = smv.dispatch;
+
+    linkEvents(dispatch);
+
+    smv.onRequestFileOptions((ext, filepath) => {
+        if (ext.toLowerCase() !== '.mp3') return [];
+
+        return [
+            {
+                name: 'Play',
+                action: () => dispatch(actions.play(filepath))
+            },
+            {
+                name: 'Add to playlist',
+                action: () => dispatch(actions.addToPlist(filepath))
+            }
+        ];
+    });
+}

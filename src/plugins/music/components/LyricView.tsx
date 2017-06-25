@@ -2,12 +2,12 @@ import * as React from 'react';
 import { StatelessComponent, Component } from 'react';
 import { Animated } from 'react-native';
 
-import { HTMLMedia } from '../../apis/media/htmlmedia';
-import { Lyric, ILyricViewer, TimeLine } from '../../apis/music/Lyric';
-import { LrcDocument, LrcNode } from '../../apis/music/lrc-document';
+import { HTMLMedia } from '../apis/media/htmlmedia';
+import { Lyric, ILyricViewer, TimeLine } from '../apis/music/Lyric';
+import { LrcDocument, LrcNode } from '../apis/music/lrc-document';
 // import { BilibiliDanmakuDocument } from '../../apis/danmaku/bili-danmaku';
 // import { DanmakuViewer } from '../../apis/danmaku/bilidm-viewer';
-import { FadeViewer } from '../../apis/music/lyric-viewer';
+import { FadeViewer } from '../apis/music/lyric-viewer';
 
 export interface LyricViewProps {
     media: HTMLMedia;

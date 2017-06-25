@@ -29,8 +29,9 @@ export interface FileOption {
 
 /** Props of <OptionPanel> Component */
 export interface OptionPanelProps {
+    title?: string;
 	options: OptionPanelItem[];
-    dismiss: (e: MouseEvent<HTMLLIElement>) => any; // Action
+    dismiss: () => any; // Action
     visible: boolean;
 }
 
@@ -42,7 +43,7 @@ export interface SMVPlugin<S extends SMVPluginState> {
     reducer: Reducer<S>;
     render: StatelessComponent<{}> | ComponentClass<{}>;
 
-    start(dispatch: Function, hub: SMVLifeCycle): void;
+    start(smv: SMVLifeCycle): void;
 
     onRequestFileOptions?(ext: string, filepath: string, dirFiles?: string[]): FileOption[];
 }
@@ -52,5 +53,6 @@ export interface SMVPluginState {
 }
 
 export interface SMVLifeCycle {
+    dispatch: Dispatch<any>;
     onRequestFileOptions(listener: (ext: string, filepath: string, dirFiles?: string[]) => FileOption[]): this;
 }

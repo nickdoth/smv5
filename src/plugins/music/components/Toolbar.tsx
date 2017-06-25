@@ -111,9 +111,9 @@ const styles = StyleSheet.create({
     toolbar: {
         width: '100%',
         bottom: '0px',
-        position: 'absolute',
-        // zIndex: '200',
-        backgroundColor: 'rgba(255,255,255,.7)',
+        // position: 'absolute',
+        // zIndex: 200,
+        backgroundColor: 'rgba(255,255,255,1)',
         // position: 'fixed',
         flex: 1,
         justifyContent: 'flex-start',

@@ -5,14 +5,14 @@ import { bindActionCreators } from 'redux';
 import { State } from '../store';
 import FilePage from '../components/FilePage';
 
-import { openFile, chdir } from '../actions';
+import { openFile, chdir, showOptionPanel, hideOptionPanel } from '../actions';
 
 const mapStateToProps = (state: { core: State }) => {
     return { ...state.core };
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => {
-    return bindActionCreators({ openFile, chdir }, dispatch);
+    return bindActionCreators({ openFile, chdir, showOptionPanel, hideOptionPanel }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(FilePage);

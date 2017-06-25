@@ -6,7 +6,8 @@ import { ListItemProps } from '../extern';
 /** 列表项 */
 const ListItem: StatelessComponent<ListItemProps> = (props) => {
 	return (
-		<TouchableHighlight style={styles.fitem} onPress={props.onPress} activeOpacity={.9} underlayColor="#eee">
+		<TouchableHighlight style={styles.fitem} onPress={props.onPress} onLongPress={props.onRequestOption}
+		activeOpacity={.9} underlayColor="#eee">
 			<Text style={{ color: 'rgb(51, 102, 153)', }}>{props.caption}</Text>
 		</TouchableHighlight>
 	);

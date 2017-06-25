@@ -33,3 +33,16 @@ export const chdir = createAction('CHDIR', (path) => {
         return { hashPath: pathJoin('/', path), files };
     });
 });
+
+export const showOptionPanel = createAction('SHOW_OPTION_PANEL', (path, dirFiles) => {
+    let operations: FileOption[] = [];
+    smvLifeCycle.optionAdaptors.map(adaptor => adaptor(extname(path).toLowerCase(), path, dirFiles)).forEach(ops => {
+        operations = operations.concat(ops);
+    });
+
+    return {
+        title: path,
+        panelOptions: operations
+    };
+});
+export const hideOptionPanel = createAction('HIDE_OPTION_PANEL', () => void 0);

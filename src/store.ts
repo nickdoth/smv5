@@ -1,36 +1,18 @@
 import { createStore, combineReducers, Action, Reducer, applyMiddleware, compose } from 'redux';
 import reduxThunk from 'redux-thunk';
-import plguins from './plugins';
-import { SMVLifeCycle, FileOption } from './extern';
+import plugins from './plugins';
+import { SMVLifeCycle, FileOption, OptionPanelItem } from './extern';
 
-export interface State {
-    title: string;
-    hashPath: string;
-    files: { name: string, path: string, isDir: boolean }[];
-}
+import core from './reducers/core';
+import { State as CoreState } from './reducers/core';
 
-const initialState: State = {
-    title: 'SMV5',
-    hashPath: '',
-    files: [
-        { name: 'Nothing Here', path: '__', isDir: false }
-    ]
-}
-
-const coreReducer = (state: State = initialState, action: Action & { payload: any }) => {
-    switch (action.type) {
-    case 'CHDIR':
-        return { ...state, files: action.payload.files, hashPath: action.payload.hashPath };
-    default:
-        return state;
-    }
-}
+export interface State extends CoreState {}
 
 let reducers = {
-    'core': coreReducer
+    core
 }
 
-plguins.forEach(plugin => {
+plugins.forEach(plugin => {
     (reducers as any)[plugin.name] = plugin.reducer;
 });
 
@@ -48,13 +30,15 @@ const store = createStore(
 export var smvLifeCycle: SMVLifeCycle & LifeCycleVars = {
     optionAdaptors: [],
 
+    dispatch: store.dispatch,
+
     onRequestFileOptions(listener) {
         smvLifeCycle.optionAdaptors.push(listener);
         return smvLifeCycle;
     }
 };
 
-plguins.forEach(plugin => plugin.start(store.dispatch, smvLifeCycle));
+plugins.forEach(plugin => plugin.start(smvLifeCycle));
 
 type LifeCycleVars = {
     optionAdaptors: ((ext: string, filepath: string, dirFiles?: string[]) => FileOption[])[];
