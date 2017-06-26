@@ -8,7 +8,7 @@ import { basename } from 'path';
 import { State } from '../store';
 import { ListView, View } from 'react-native';
 
-interface FilePageProps extends State {
+interface AppViewProps extends State {
     openFile(path: string, dirFiles: string[]): any;
     showOptionPanel(path: string, dirFiles: string[]): any;
     hideOptionPanel(): any;
@@ -19,7 +19,7 @@ interface FilePageProps extends State {
     // optionPanelVisile: boolean;
 }
 
-const FilePage: StatelessComponent<FilePageProps> = (props) => {
+const AppView: StatelessComponent<AppViewProps> = (props) => {
     let renderItem = (file: { name: string, path: string, isDir: boolean }) => {
         // let file = props.files[index];
 
@@ -56,4 +56,4 @@ const FilePage: StatelessComponent<FilePageProps> = (props) => {
     )
 }
 
-export default FilePage;
+export default AppView;

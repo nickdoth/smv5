@@ -27,7 +27,7 @@ const OptionPanel: StatelessComponent<OptionPanelProps> = (props) => {
 		<Modal>
 			<View style={styles.panel}>
 				<View style={styles.title}>
-					<Text style={{ color: '#555' }}>{props.title ? props.title : 'Options'}</Text>
+					<Text style={{ color: '#888' }}>{props.title ? props.title : 'Options'}</Text>
 				</View>
 				{optionElems}
 				<TouchableHighlight onPress={() => props.dismiss()} style={styles.panelItem}
@@ -117,7 +117,7 @@ var styles = {
 	panel: {
 		background: '#fff',
 		width: '100%',
-		borderTop: '#555 solid 1px',
+		borderTop: '#777 solid 1px',
 		// position: 'absolute' as 'absolute',
 		// zIndex: 999,
 		// bottom: 0

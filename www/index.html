@@ -55,7 +55,35 @@
     <body>
         <div id="app"></div>
 
-        <script type="text/javascript" src="/app.js"></script>
+        <script>
+            window.smvPluginFactories = window.smvPluginFactories || [];
+
+            function videoTemp({ React, Redux, ReduxAction, ReactRedux, ReactNative }) {
+                return {
+                    name: 'videoTemp',
+                    reducer: (num, action) => 0,
+                    render: () => null,
+                    start(smv) {
+                        console.log('From videoTemp#start:', smv);
+                        smv.onRequestFileOptions((ext, filepath) => {
+                            if (ext.toLowerCase() !== '.mp4') return [];
+
+                            return [
+                                {
+                                    name: '在新窗口播放视频',
+                                    action: () => window.open('/files/' + filepath)
+                                }
+                            ];
+                        });
+                    }
+                }
+            }
+
+            smvPluginFactories.push(videoTemp);
+        </script>
+
+        <script type="text/javascript" src="/vendor.js"></script>
+        <script type="text/javascript" src="/main.js"></script>
 
         <div class="lyric-container" id="lrc-template" style="display: none">
             <div class="lyric-inner">

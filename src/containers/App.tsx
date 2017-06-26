@@ -1,9 +1,8 @@
-import * as React from 'react';
-import { StatelessComponent, MouseEvent } from 'react';
+// import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { State } from '../store';
-import FilePage from '../components/FilePage';
+import AppView from '../components/AppView';
 
 import { openFile, chdir, showOptionPanel, hideOptionPanel } from '../actions';
 
@@ -15,4 +14,4 @@ const mapDispatchToProps = (dispatch: Dispatch<any>) => {
     return bindActionCreators({ openFile, chdir, showOptionPanel, hideOptionPanel }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(FilePage);
+export default connect(mapStateToProps, mapDispatchToProps)(AppView);

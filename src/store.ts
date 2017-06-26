@@ -27,6 +27,10 @@ const store = createStore(
 
 // define lifecycle callbacks & load all plugins
 
+type LifeCycleVars = {
+    optionAdaptors: ((ext: string, filepath: string, dirFiles?: string[]) => FileOption[])[];
+};
+
 export var smvLifeCycle: SMVLifeCycle & LifeCycleVars = {
     optionAdaptors: [],
 
@@ -39,11 +43,5 @@ export var smvLifeCycle: SMVLifeCycle & LifeCycleVars = {
 };
 
 plugins.forEach(plugin => plugin.start(smvLifeCycle));
-
-type LifeCycleVars = {
-    optionAdaptors: ((ext: string, filepath: string, dirFiles?: string[]) => FileOption[])[];
-};
-
-
 
 export default store;
