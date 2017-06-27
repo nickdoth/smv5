@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { StatelessComponent, MouseEvent, Component } from 'react';
-import { TouchableHighlight, View, Animated, Text, Easing } from 'react-native';
+import { TouchableHighlight, View, Animated, Text, Easing, TouchableWithoutFeedback, Dimensions } from 'react-native';
 
 import { OptionPanelItem, OptionPanelProps } from '../extern';
 
@@ -10,33 +10,37 @@ const Modal: StatelessComponent<{}> = (props) => {
 	</div>
 };
 
-const OptionPanel: StatelessComponent<OptionPanelProps> = (props) => {
+const renderOptionPanel: StatelessComponent<OptionPanelProps> = (props) => {
 	var optionElems = props.options.map(option => {
 		return <TouchableHighlight onPress={() => {
 				option.action();
 				props.dismiss();
 			}} style={styles.panelItem}
 				activeOpacity={.9} underlayColor="#eee">
-			<View>{option.name}</View>
+			<View><Text>{option.name}</Text></View>
 		</TouchableHighlight>;
 	});
 
 	// if (!props.visible) return;
 
 	return (
-		<Modal>
-			<View style={styles.panel}>
-				<View style={styles.title}>
-					<Text style={{ color: '#888' }}>{props.title ? props.title : 'Options'}</Text>
-				</View>
-				{optionElems}
-				<TouchableHighlight onPress={() => props.dismiss()} style={styles.panelItem}
-					activeOpacity={.9} underlayColor="#eee">
-					<View>Cancel</View>
-				</TouchableHighlight>
+		<View style={styles.panel} ref="view">
+			<View style={styles.title}>
+				<Text style={{ color: '#888' }}>{props.title ? props.title : 'Options'}</Text>
 			</View>
-		</Modal>
+			{optionElems}
+			<TouchableHighlight onPress={() => props.dismiss()} style={styles.panelItem}
+				activeOpacity={.9} underlayColor="#eee">
+				<View><Text>Cancel</Text></View>
+			</TouchableHighlight>
+		</View>
 	);
+}
+
+class OptionPanel extends Component<OptionPanelProps, {}> {
+	render() { return renderOptionPanel(this.props); }
+
+	setNativeProps(p: any) { (this.refs.view as any).setNativeProps(p); }
 }
 
 interface AnimatedState {
@@ -56,19 +60,20 @@ export default class AnimatedOptionPanel extends Component<OptionPanelProps, Ani
 
 		return <View>
 			<Animated.View
-				style={{ opacity: this.state.opacity, position: 'fixed',
+				style={{ opacity: this.state.opacity, position: 'absolute',
 					zIndex: 200, bottom: this.state.bottom, width: '100%' }}>
 				<OptionPanel {...this.props} />
 			</Animated.View>
 
 			<Animated.View
-				style={{ opacity: this.state.opacity, position: 'fixed',
-					zIndex: 199, bottom: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.5)' }}>
+				style={{ opacity: this.state.opacity, position: 'absolute',
+					zIndex: 199, bottom: 0, width: '100%', height: Dimensions.get('window').height, backgroundColor: 'rgba(0,0,0,0.5)' }}>
 				{/*<OptionPanel {...this.props} />*/}
-				<div
-					onClick={this.props.dismiss}
+				<TouchableHighlight underlayColor="rgba(0,0,0,0)"
+					onPress={this.props.dismiss}
 					style={{ width: '100%', height: '100%' }}>
-				</div>
+					<View />
+				</TouchableHighlight>
 			</Animated.View>
 		</View>
 	}
@@ -91,19 +96,20 @@ export default class AnimatedOptionPanel extends Component<OptionPanelProps, Ani
 		}
 		else if (!this.props.visible && nextProps.visible) {
 			// fade in
-			this.setState({ ...this.state, isDisplay: true });
-			Animated.parallel([
-				Animated.timing(this.state.opacity, {
-					toValue: 1,
-					duration: 150,
-					// easing: Easing.back as any
-				}),
-				Animated.timing(this.state.bottom, {
-					toValue: 0,
-					duration: 150,
-					easing: Easing.in(Easing.ease),
-				}),
-			]).start();
+			this.setState({ ...this.state, isDisplay: true }, () => {
+				Animated.parallel([
+					Animated.timing(this.state.opacity, {
+						toValue: 1,
+						duration: 150,
+						// easing: Easing.back as any
+					}),
+					Animated.timing(this.state.bottom, {
+						toValue: 0,
+						duration: 150,
+						easing: Easing.in(Easing.ease),
+					}),
+				]).start();
+			});
 				
 		}
 	}
@@ -115,9 +121,10 @@ var styles = {
 	},
 
 	panel: {
-		background: '#fff',
+		backgroundColor: '#fff',
 		width: '100%',
-		borderTop: '#777 solid 1px',
+		borderTopColor: '#777',
+		borderTopWidth: 1,
 		// position: 'absolute' as 'absolute',
 		// zIndex: 999,
 		// bottom: 0
@@ -127,6 +134,7 @@ var styles = {
 		margin: 5,
 		paddingLeft: 15,
 		paddingBottom: 5,
-		borderBottom: '#eee solid 1px',
+		borderBottomColor: '#eee',
+		borderBottomWidth: 1
 	},
 };

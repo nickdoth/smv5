@@ -32,7 +32,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         /* background:rgba(180,208,235,.4); */
         // zIndex: '100',
-        boxShadow: '1px 0 1.3px #999',
+        // boxShadow: '1px 0 1.3px #999',
+        borderBottomWidth: 1.3,
+        borderBottomColor: '#ccc',
     },
 });
 

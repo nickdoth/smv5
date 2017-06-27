@@ -47,11 +47,14 @@ const AppView: StatelessComponent<AppViewProps> = (props) => {
     // console.log('React-List', ReactList);
     return (
         <View style={{ flex: 1 }}>
-            <Page title={basename(decodeURIComponent(props.hashPath))}>
-                <ListView dataSource={dsFiles} renderRow={renderItem} />
-            </Page>
+            <View style={{ flex: 1 }}>
+                <Page title={basename(decodeURIComponent(props.hashPath))}>
+                    <ListView dataSource={dsFiles} renderRow={renderItem} />
+                </Page>
+                {props.plugins.map(plugin => <plugin.render key={`smv-plugin-${plugin.name}`} />)}
+            </View>
+
             <OptionPanel dismiss={props.hideOptionPanel} options={props.panelOptions} visible={props.optionPanelVisible}/>
-            {props.plugins.map(plugin => <plugin.render key={`smv-plugin-${plugin.name}`} />)}
         </View>
     )
 }

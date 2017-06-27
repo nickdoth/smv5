@@ -1,4 +1,4 @@
-import { SMVLifeCycle } from '../extern';
+import { SMVLifeCycle, config } from '../extern';
 
 import * as React from 'react';
 import { StatelessComponent } from 'react';
@@ -32,14 +32,14 @@ const Img = (props: { src: string, onLoad: () => any }) => {
         return <div><img src={props.src} style={{ width: '100%' }} onLoad={props.onLoad} /></div>
     }
     else {
-        return <Image source={{ uri: props.src }} onLoad={props.onLoad} />;
+        return <Image source={{ uri: props.src }} onLoad={props.onLoad} style={{ width: 400, height: 600 }} />;
     }
 }
 
 const ImgView: StatelessComponent<PluginState> = (props) => {
     if (!props.visible) return null;
 
-    return <View style={{ position: 'absolute', zIndex: 999, padding: '20px', minHeight: '100%', width: '100%',
+    return <View style={{ position: 'absolute', zIndex: 999, padding: 20, minHeight: '100%', width: '100%',
             overflow: 'visible', backgroundColor: '#222' }}>
         <View style={{ flex: 1 }}>
             <View style={{ flex: 1, flexDirection: 'row', flexGrow: 0, justifyContent: 'flex-end' }}>
@@ -53,7 +53,7 @@ const ImgView: StatelessComponent<PluginState> = (props) => {
                 <Text style={{ color: '#fefefe' }}>{props.src}</Text>
             </View>
 
-            <Img src={'/files/' + props.src} onLoad={props.imgLoaded} />
+            <Img src={config.baseFilePath + props.src} onLoad={props.imgLoaded} />
         </View>
     </View>;
 }

@@ -17,8 +17,8 @@ const styles = StyleSheet.create({
 	fitem: {
 		width: 'auto',
 		// display: 'block',
-		paddingTop: '20px',
-        paddingBottom: '20px',
+		paddingTop: 20,
+        paddingBottom: 20,
         paddingLeft: '2%',
 
         borderBottomColor: '#eee',

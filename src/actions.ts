@@ -1,6 +1,6 @@
 import { createAction } from 'redux-action';
 import plugins from './plugins';
-import { OptionPanelItem, FileOption } from './extern';
+import { OptionPanelItem, FileOption, config } from './extern';
 import { join as pathJoin, extname } from 'path';
 import { smvLifeCycle } from './store';
 
@@ -12,10 +12,10 @@ export const openFile = createAction('OPEN_FILE', (path, dirFiles) => {
 
     // call the first operatioal action
     console.log('actions.openFile/path', path);
-    let firstMatchedAction = operations[0].action;
+    let firstMatched = operations[0];
 
-    if (firstMatchedAction) {
-        firstMatchedAction(path);
+    if (firstMatched) {
+        firstMatched.action(path);
         return { openedFile: path };
     }
     else {
@@ -26,7 +26,7 @@ export const openFile = createAction('OPEN_FILE', (path, dirFiles) => {
 });
 
 export const chdir = createAction('CHDIR', (path) => {
-    return fetch(pathJoin('/files/' + path))
+    return fetch(pathJoin(config.baseFilePath + path))
     .then(res => res.json())
     .then(files => {
         files.unshift({ name: '..', path: pathJoin(path, '..'), isDir: true });

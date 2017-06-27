@@ -41,7 +41,7 @@ const Toolbar: StatelessComponent<ToolbarProps> = ({ isPause, togglePlay, toggle
     return <View>
         <View style={styles.toolbar}>
             {/*<!-- glyphicon glyphicon-play  -->*/}
-            <ToolbarButton onPress={() => togglePlay()} style={{width: '50px'}}>
+            <ToolbarButton onPress={() => togglePlay()} style={{width: 50}}>
                 {Icon({iconSym: isPause ? glyphicon.play : glyphicon.pause})}
             </ToolbarButton>
             <View style={[
@@ -50,32 +50,28 @@ const Toolbar: StatelessComponent<ToolbarProps> = ({ isPause, togglePlay, toggle
                 <View style={[styles.progval, { width: `${process}%` }]}>
                     <Text>{' '}</Text>
                 </View>
-                <View style={{ position: 'absolute', left: '10px', width: '70%', top: 0, zIndex: 99, overflow: 'hidden', height: '35px', flex: 1, flexDirection: 'row' }}>
+                <View style={{ position: 'absolute', left: 10, width: '70%', top: 0, zIndex: 99, overflow: 'hidden', height: 35, flex: 1, flexDirection: 'row' }}>
                     { !canPlay ? <ActivityIndicator /> : null}
                     <Text style={{ color: '#fff' }}>{basename(path)}</Text>
                 </View>
             </View>
-            <View style={[styles.toolbarItem, {width: '68px'}]}>
+            <View style={[styles.toolbarItem, {width: 68}]}>
                 <Text style={{ textAlign: 'center' }}>{' '}{readableTime(remain)}{' '}</Text>
             </View>
 
-            <ToolbarButton style={{width: '45px'}} onPress={() => togglePlist()}>
+            <ToolbarButton style={{width: 45}} onPress={() => togglePlist()}>
                 {Icon({iconSym: glyphicon.menuHamburger})}
             </ToolbarButton>
 
-            <ToolbarButton style={{width: '45px'}}>
+            <ToolbarButton style={{width: 45}}>
                 {Icon({iconSym: glyphicon.comment})}
             </ToolbarButton>
 
-            <ToolbarButton style={{width: '45px'}}>
+            <ToolbarButton style={{width: 45}}>
                 {Icon({iconSym: glyphicon.fullscreen})}
             </ToolbarButton>
         
         </View>
-
-        {/*<div id="topbar" className="" style={{position: 'absolute', left: '5px', top: '5px', display: 'none'}}>
-            <span id="video-title"></span>
-        </div>*/}
     </View>
 };
 
@@ -110,7 +106,7 @@ const glyphicon = {
 const styles = StyleSheet.create({
     toolbar: {
         width: '100%',
-        bottom: '0px',
+        bottom: 0,
         // position: 'absolute',
         // zIndex: 200,
         backgroundColor: 'rgba(255,255,255,1)',
@@ -122,20 +118,20 @@ const styles = StyleSheet.create({
 
     toolbarItem: {
         // float: 'left',
-        height: '35px',
-        // lineHeight: '35px',
+        height: 35,
+        // lineHeight: 35,
     },
 
     toolbarItemText: {
-        lineHeight: '35px',
+        lineHeight: 35,
     },
 
     progval: {
         position: 'absolute',
-        width: `0px`,
-        top: '0px',
-        left: '0px',
-        // lineHeight: '35px',
+        width: 0,
+        top: 0,
+        left: 0,
+        // lineHeight: 35,
         backgroundColor: '#777'
     }
 });

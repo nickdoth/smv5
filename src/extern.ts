@@ -56,3 +56,7 @@ export interface SMVLifeCycle {
     dispatch: Dispatch<any>;
     onRequestFileOptions(listener: (ext: string, filepath: string, dirFiles?: string[]) => FileOption[]): this;
 }
+
+export var config = {
+    baseFilePath: '/files/'
+};
