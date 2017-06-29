@@ -26,7 +26,7 @@ export const openFile = createAction('OPEN_FILE', (path, dirFiles) => {
 });
 
 export const chdir = createAction('CHDIR', (path) => {
-    return fetch(pathJoin(config.baseFilePath + path))
+    return fetch(config.baseFilePath + path)
     .then(res => res.json())
     .then(files => {
         files.unshift({ name: '..', path: pathJoin(path, '..'), isDir: true });

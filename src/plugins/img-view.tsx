@@ -1,13 +1,17 @@
 import { SMVLifeCycle, config } from '../extern';
 
 import * as React from 'react';
-import { StatelessComponent } from 'react';
+import { StatelessComponent, Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { createAction } from 'redux-action';
 import { extname } from 'path';
 import { View, Image, Text, Button, TouchableHighlight, ActivityIndicator,
-    StyleSheet, Platform, PlatformOSType } from 'react-native';
+    StyleSheet, Platform, PlatformOSType, Dimensions, ScrollView } from 'react-native';
+let PhotoView: any;
+if (Platform.OS !== 'web' as any) {
+    PhotoView = require('react-native-photo-view');
+}
 
 interface PluginState {
     visible: boolean;
@@ -28,20 +32,62 @@ const initialState: PluginState = {
 };
 
 const Img = (props: { src: string, onLoad: () => any }) => {
+    let { width, height } = Dimensions.get('window');
     if (Platform.OS === 'web' as PlatformOSType) {
-        return <div><img src={props.src} style={{ width: '100%' }} onLoad={props.onLoad} /></div>
+        return <ScrollView key={props.src}>
+            <img src={props.src} style={{ width: '100%' }} onLoad={props.onLoad} />
+        </ScrollView>
     }
     else {
-        return <Image source={{ uri: props.src }} onLoad={props.onLoad} style={{ width: 400, height: 600 }} />;
+        return <AutoImageView key={props.src} 
+            source={{ uri: props.src }}
+            onLoad={props.onLoad}
+        />;
+    }
+}
+
+class AutoImageView extends Component<any, { width: number, height: number }> {
+    constructor(props: any) {
+        super(props);
+        this.state = { width: 0, height: 0 };
+    }
+    
+    render() {
+        if (!this.state.width) return <View />;
+        let imgScale = Dimensions.get('window').width / this.state.width;
+        console.log(imgScale);
+        return <PhotoView ref="photo"
+            minimumZoomScale={0.5}
+            maximumZoomScale={3}
+            scale={1}
+            style={{width: this.state.width * imgScale, height: this.state.height * imgScale}}
+            resizeMode={'contain'}
+            {...this.props} />;
+    }
+
+    componentWillReceiveProps(nextProps: any) {
+        if (nextProps.source.uri !== this.props.source.uri) {
+            Image.getSize(nextProps.source.uri, (width: number, height: number) => {
+                this.setState({ width, height });
+            }, () => console.error('Failed to fetch source:', nextProps.source.uri));
+        }
+    }
+
+    componentDidMount() {
+        Image.getSize(this.props.source.uri, (width: number, height: number) => {
+            this.setState({ width, height });
+        }, () => console.error('Failed to fetch source:', this.props.source.uri));
     }
 }
 
 const ImgView: StatelessComponent<PluginState> = (props) => {
     if (!props.visible) return null;
 
-    return <View style={{ position: 'absolute', zIndex: 999, padding: 20, minHeight: '100%', width: '100%',
+    return <View style={{ position: 'absolute', zIndex: 999, padding: 0,
+            // minHeight: '100%', width: '100%',
+            top: 0, bottom: 0, left: 0, right: 0,
             overflow: 'visible', backgroundColor: '#222' }}>
-        <View style={{ flex: 1 }}>
+        <View style={{ position: 'absolute', backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1001, width: '100%' }}>
             <View style={{ flex: 1, flexDirection: 'row', flexGrow: 0, justifyContent: 'flex-end' }}>
                 {props.loading ? <ActivityIndicator /> : null}
                 <Button onPress={props.toggle} title="Close" />
@@ -52,9 +98,9 @@ const ImgView: StatelessComponent<PluginState> = (props) => {
             <View style={{ flex: 1, flexDirection: 'row' }}>
                 <Text style={{ color: '#fefefe' }}>{props.src}</Text>
             </View>
-
-            <Img src={config.baseFilePath + props.src} onLoad={props.imgLoaded} />
         </View>
+
+        <Img src={config.baseFilePath + props.src} onLoad={props.imgLoaded} />
     </View>;
 }
 

@@ -1,6 +1,6 @@
 import { SMVPlugin } from '../extern';
 // internal plugins
-import * as music from './music';
+// import * as music from './music';
 import * as imgView from './img-view';
 
 // for plugin factory
@@ -15,7 +15,8 @@ if (!smvPluginFactories) smvPluginFactories = [];
 
 const plugins: SMVPlugin<{}>[] = [
     // internal plugins
-    music, imgView
+    // music,
+    imgView
 ].concat(smvPluginFactories.map(
     (factory: Function) => factory({ React, Redux, ReduxAction, ReactRedux, ReactNative })
 ));
