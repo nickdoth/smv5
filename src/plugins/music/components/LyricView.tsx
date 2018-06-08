@@ -9,9 +9,17 @@ import { LrcDocument, LrcNode } from '../apis/music/lrc-document';
 // import { DanmakuViewer } from '../../apis/danmaku/bilidm-viewer';
 import { FadeViewer } from '../apis/music/lyric-viewer';
 
+type LrcStyle = {
+    color?: string;
+    textShadow?: string;
+}
+
 export interface LyricViewProps {
     media: HTMLMedia;
     id: any;
+    getLyric?: () => Promise<string>;
+    
+    lrcStyle?: LrcStyle;
 }
 
 export default class LyricView extends Component<LyricViewProps, {}> {
@@ -26,7 +34,7 @@ export default class LyricView extends Component<LyricViewProps, {}> {
     
     componentDidMount() {
         this.lrc && this.lrc.destroy();
-        this.lrc = new Lyric(this.props.media, LrcDocument);
+        this.lrc = new Lyric(this.props.media, LrcDocument, this.props.getLyric);
         console.log('LyricView.componentDidMount; LyricView#viewer', this.viewer);
         this.lrc.addView(this.viewer);
     }
@@ -49,57 +57,66 @@ export default class LyricView extends Component<LyricViewProps, {}> {
 
     render() {
         // return <div data-id={this.props.id} />;
-        return <LyricContainer ref={(el) => this.viewer = el} />;
+        return <LyricContainer ref={(el) => this.viewer = el} lrcStyle={this.props.lrcStyle} />;
     }
 }
 
 interface LyricElemState {
-    lyrics: { [key: string]: {
+    lyrics: {
         ly: string,
-        lyTr: string
-    } };
+        lyTr: string,
+        key: number,
+    }[];
 }
 
-class LyricContainer extends Component<{}, LyricElemState> implements ILyricViewer<LrcNode> {
+class LyricContainer extends Component<{ lrcStyle?: LrcStyle; }, LyricElemState> implements ILyricViewer<LrcNode> {
 
     constructor(props: {}) {
         super(props);
         this.state = {
-            lyrics: {}
+            lyrics: []
         };
     }
 
+    /**
+     * @override ILyricViewer<LrcNode>
+     * @param t 
+     */
     init(t?: TimeLine<LrcNode>) {
         console.log('LyricElem.init');
     }
 
+    /**
+     * @override ILyricViewer<LrcNode>
+     * @param matches 
+     * @param timeLine 
+     */
     update(matches: number[], timeLine: TimeLine<LrcNode>) {
         let [ ly, lyTr ] = timeLine[matches[0]].data.content.split('/');
-        this.setState({ lyrics: { ...this.state.lyrics, [matches[0]]: { ly, lyTr } } });
+        this.setState({ lyrics: [ ...this.state.lyrics, { key: matches[0], ly, lyTr }  ] });
     }
 
+    /**
+     * @override ILyricViewer<LrcNode>
+     */
     destroy() {
-        this.setState({ lyrics: {} });
+        this.setState({ lyrics: [] });
     }
 
-    dismiss(selectedKey: string) {
-        let lyrics: { [key: string]: any } = {};
-        Object.keys(this.state.lyrics).filter(key => key !== selectedKey).forEach(key => {
-            lyrics[key] = this.state.lyrics[key];
-        });
+    dismiss(selectedKey: number) {
+        let lyrics = Array.from(this.state.lyrics).filter(l => l.key !== selectedKey);
 
         this.setState({ lyrics });
     }
 
     render() {
-        let lyricNodes = Object.keys(this.state.lyrics).map((key, i, keys) => {
-            let lyric = this.state.lyrics[key];
+        let lyricNodes = this.state.lyrics.map((lyric, i) => {
             return <LyricNode
-                key={key}
+                key={lyric.key}
                 lyTr={lyric.lyTr ? lyric.lyTr : lyric.ly}
                 ly={lyric.lyTr? lyric.ly : undefined}
-                fadeOut={keys.length !== i + 1}
-                onFadeOutCompleted={() => this.dismiss(key)}/>
+                fadeOut={this.state.lyrics.length !== i + 1}
+                onFadeOutCompleted={() => this.dismiss(lyric.key)}/>
         });
 
         // console.log('LyricContainer.state.lyrics', this.state.lyrics);
@@ -107,7 +124,7 @@ class LyricContainer extends Component<{}, LyricElemState> implements ILyricView
         return (
             <div style={styles.container}>
                 <div>
-                    <span style={styles.lyricText}>
+                    <span style={{ ...styles.lyricText, ...this.props.lrcStyle }}>
                         {/*<LyricNode key={this.state.lyPrev} ly={this.state.lyPrev} lyTr={this.state.lyPrevCN} fadeOut />
                         <LyricNode key={this.state.ly} ly={this.state.ly} lyTr={this.state.lyTr} />*/}
                         {/*<LyricNode ly={this.state.lyNext} lyTr={this.state.lyNextCN} opacity={0.6} />*/}

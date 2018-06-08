@@ -11,17 +11,18 @@ export class Lyric extends EventEmitter implements LyricEvents {
     enableCheck = false;
     private lrcDocument: Document<any>;
 
-    constructor(private media: Media, private DocCtor: DocumentCtor, private src?: string) {
+    constructor(private media: Media, private DocCtor: DocumentCtor, private getLyric?: () => Promise<string>) {
         super();
         if(!media) {
             throw new Error("Audio Element not specified.");
         }
 
-        if(!src) {
+        if(!getLyric) {
             //默认以音乐文件名为lrc文件名
-            var _src = media.getUrl().split('.');
+            let _src = media.getUrl().split('.');
             _src[_src.length - 1] = this.DocCtor.extname;
-            this.src = _src.join('.');
+            let src = _src.join('.');
+            this.getLyric = () => fetch(src).then(res => res.text());
         }
         
         this.init()
@@ -41,8 +42,8 @@ export class Lyric extends EventEmitter implements LyricEvents {
         
         // ajax().resType(this.DocCtor.responseType || 'text')
         // .get(this.src, 'action=download', (err, rawData, stat) => {
-        fetch(this.src).then(res => res.text()).then(rawData => {
-            console.log('Lyric opened:', this.src)
+        this.getLyric().then(rawData => {
+            console.log('Lyric opened');
             clearTimeout(loadTimeout);
             !isLoadTimeouted && callback && callback();
             // document.getElementById("nd-lyric").innerHTML = '';
@@ -72,7 +73,8 @@ export class Lyric extends EventEmitter implements LyricEvents {
                 if(matchLines.toString() !== currentLine) {
                     //document.getElementById("nd-lyric").innerHTML = lrcNode.content 
                     currentLine = matchLines.toString();
-                    matchStartPoint = matchLines[matchLines.length - 1];
+                    //  FIXME: Randomly crash the checker when media seeked
+                    // matchStartPoint = matchLines[matchLines.length - 1];
                     this.emit('update', matchLines, timeLine);
                     // log(timeLine[currentLine].data.content);
                 }
@@ -92,7 +94,7 @@ export class Lyric extends EventEmitter implements LyricEvents {
             //timer=setInterval(checker,1);
             
         }).catch(err => {
-            this.emit('lrc_notfound', this.src);
+            this.emit('lrc_notfound');
             // document.getElementById("nd-lyric").innerHTML = '找不到歌词';
             setTimeout(() => {
                 // document.getElementById("nd-lyric").innerHTML = '';
